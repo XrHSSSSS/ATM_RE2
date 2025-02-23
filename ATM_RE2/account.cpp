@@ -48,9 +48,8 @@ void account_info_menu(int current_account_index) {
     }
 }
 
-/**
- * @brief 修改密码
- */
+//修改密码
+ 
 void change_password(int current_account_index) {
     // 重新加载账户数据
     if (!read_account(ACCOUNT_FILE)) {
@@ -119,9 +118,8 @@ void change_password(int current_account_index) {
     printf("密码修改成功！\n");
 }
 
-/**
- * @brief 显示账户信息
- */
+ //显示账户信息
+ 
 void show_account_info(int current_account_index) {
     Account* current = &accounts[current_account_index];
     printf("\n=== 账户信息 ===\n");
@@ -132,17 +130,15 @@ void show_account_info(int current_account_index) {
     printf("================\n");
 }
 
-/**
- * @brief 显示余额
- */
+// 显示余额
+ 
 void show_balance(int current_account_index) {
     Account* current = &accounts[current_account_index];
     printf("\n当前余额: ¥%.2lf\n", current->money);
 }
 
-/**
- * @brief 查询交易记录
- */
+//查询交易记录
+
 void show_transaction_history(int current_account_index) {
     Account* current = &accounts[current_account_index];
     printf("\n=== 交易记录 ===\n");
