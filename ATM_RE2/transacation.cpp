@@ -11,6 +11,13 @@
 
 
 // 取款函数
+#include <stdio.h>
+#include <stdlib.h>
+#include <time.h>
+#include <string.h>
+#include <ctype.h>
+#include <Windows.h>
+
 void get_cash(int current_account_index) {
     // 重新加载最新账户数据
     if (!read_account("accounts.txt")) {
@@ -42,7 +49,46 @@ void get_cash(int current_account_index) {
         while ((c = getchar()) != '\n' && c != EOF);
 
         // 获取用户输入
-        if (scanf("%lf", &amount) != 1) {
+        char input[50];
+        if (fgets(input, sizeof(input), stdin) == NULL) {
+            printf("输入错误，请重新输入（剩余尝试次数: %d）\n", max_attempts - input_attempts - 1);
+            input_attempts++;
+            continue;
+        }
+
+        // 移除输入字符串中的换行符
+        input[strcspn(input, "\n")] = 0;
+
+        // 取消操作
+        if (strcmp(input, "0") == 0) {
+            printf("取款操作已取消\n");
+            return;
+        }
+
+        // 检查输入是否为有效的数字
+        int is_valid = 1;
+        int dot_count = 0;
+
+        for (int i = 0; input[i] != '\0'; i++) {
+            if (input[i] == '.') {
+                dot_count++;
+            }
+            else if (!isdigit(input[i]) && input[i] != '.') {
+                is_valid = 0;
+                break;
+            }
+        }
+
+        // 如果有多个小数点或者包含非法字符，输入无效
+        if (dot_count > 1 || !is_valid) {
+            printf("输入格式错误，请重新输入（剩余尝试次数: %d）\n",
+                max_attempts - input_attempts - 1);
+            input_attempts++;
+            continue;
+        }
+
+        // 将输入字符串转化为浮动金额
+        if (sscanf(input, "%lf", &amount) != 1) {
             printf("输入格式错误，请重新输入（剩余尝试次数: %d）\n",
                 max_attempts - input_attempts - 1);
             input_attempts++;
@@ -110,6 +156,7 @@ void get_cash(int current_account_index) {
     time_t now = time(NULL);
     printf("%s", ctime(&now));
     printf("====================\n");
+    Sleep(3000);
 }
 
 
@@ -117,11 +164,18 @@ void get_cash(int current_account_index) {
 
 
 
+
 //存款函数
+#include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
+#include <ctype.h>
+#include <time.h>
+
 void input_cash(int current_account_index) {
     // 重新加载账户数据，确保数据最新
     if (!read_account("accounts.txt")) {
-        fprintf(stderr, "[错误] 账户数据加载失败，无法进行取款操作\n");
+        fprintf(stderr, "[错误] 账户数据加载失败，无法进行存款操作\n");
         return;
     }
 
@@ -147,9 +201,50 @@ void input_cash(int current_account_index) {
         int c;
         while ((c = getchar()) != '\n' && c != EOF);
 
-        // 获取用户输入
-        if (scanf("%lf", &amount) != 1) {
-            printf("输入无效，请输入数字（剩余尝试次数: %d）\n",
+        // 获取用户输入的字符串
+        char input[50];
+        if (fgets(input, sizeof(input), stdin) == NULL) {
+            printf("输入错误，请重新输入（剩余尝试次数: %d）\n",
+                MAX_ATTEMPTS - input_attempts - 1);
+            input_attempts++;
+            continue;
+        }
+
+        // 去除换行符
+        input[strcspn(input, "\n")] = 0;
+
+        // 用户取消操作
+        if (strcmp(input, "0") == 0) {
+            printf("操作已取消。\n");
+            return;
+        }
+
+        // 检查输入格式是否合法
+        int is_valid = 1;
+        int dot_count = 0;
+
+        // 遍历输入，检查非法字符
+        for (int i = 0; input[i] != '\0'; i++) {
+            if (input[i] == '.') {
+                dot_count++;
+            }
+            else if (!isdigit(input[i])) {
+                is_valid = 0;
+                break;
+            }
+        }
+
+        // 检查小数点数量及是否合法
+        if (dot_count > 1 || !is_valid) {
+            printf("输入格式错误，请重新输入（剩余尝试次数: %d）\n",
+                MAX_ATTEMPTS - input_attempts - 1);
+            input_attempts++;
+            continue;
+        }
+
+        // 将字符串转为浮动金额
+        if (sscanf(input, "%lf", &amount) != 1) {
+            printf("输入格式错误，请重新输入（剩余尝试次数: %d）\n",
                 MAX_ATTEMPTS - input_attempts - 1);
             input_attempts++;
             continue;
@@ -210,7 +305,9 @@ void input_cash(int current_account_index) {
     time_t now = time(NULL);
     printf("%s", ctime(&now));
     printf("====================\n");
+    Sleep(3000);
 }
+
 
 
 
@@ -260,48 +357,84 @@ void trans_money(int current_account_index) {
 
     // 带尝试限制的输入循环
     while (input_attempts < max_attempts) {
-        printf("请输入转账金额（0取消操作）: ");
+        printf("请输入转账金额（0取消操作，最多两位小数）: ");
 
         // 清理输入缓冲区
         int c;
         while ((c = getchar()) != '\n' && c != EOF);
 
-        // 获取用户输入
-        if (scanf("%lf", &amount) != 1) {
-            printf("输入格式错误，请重新输入（剩余尝试次数: %d）\n",
-                max_attempts - input_attempts - 1);
+        // 获取用户输入的字符串
+        char input[50];
+        if (fgets(input, sizeof(input), stdin) == NULL) {
+            printf("输入无效，请重新输入（剩余尝试次数: %d）\n", max_attempts - input_attempts - 1);
             input_attempts++;
             continue;
         }
 
-        // 操作取消
-        if (amount == 0) {
-            printf("转账操作已取消\n");
+        // 去除换行符
+        input[strcspn(input, "\n")] = 0;
+
+        // 用户取消操作
+        if (strcmp(input, "0") == 0) {
+            printf("操作已取消。\n");
             return;
         }
 
-        // 金额验证
+        // 检查输入格式是否合法
+        int is_valid = 1;
+        int dot_count = 0;
+
+        // 遍历输入，检查非法字符
+        for (int i = 0; input[i] != '\0'; i++) {
+            if (input[i] == '.') {
+                dot_count++;
+            }
+            else if (!isdigit(input[i])) {
+                is_valid = 0;
+                break;
+            }
+        }
+
+        // 检查小数点数量及是否合法
+        if (dot_count > 1 || !is_valid) {
+            printf("输入格式错误，请重新输入（剩余尝试次数: %d）\n", max_attempts - input_attempts - 1);
+            input_attempts++;
+            continue;
+        }
+
+        // 将字符串转为浮动金额
+        if (sscanf(input, "%lf", &amount) != 1) {
+            printf("输入格式错误，请重新输入（剩余尝试次数: %d）\n", max_attempts - input_attempts - 1);
+            input_attempts++;
+            continue;
+        }
+
+        // 用户取消操作
+        if (amount == 0) {
+            printf("操作已取消。\n");
+            return;
+        }
+
+        // 验证金额有效性
         if (amount <= 0) {
-            printf("金额必须大于零（剩余尝试次数: %d）\n",
-                max_attempts - input_attempts - 1);
+            printf("金额必须大于零（剩余尝试次数: %d）\n", max_attempts - input_attempts - 1);
             input_attempts++;
             continue;
         }
 
-        // 检查小数精度
-        if (amount * 100 != (double)((int)(amount * 100))) {
-            printf("金额最多支持两位小数（剩余尝试次数: %d）\n",
-                max_attempts - input_attempts - 1);
+        // 检查小数位数（最多两位）
+        if (round(amount * 100) != amount * 100) {
+            printf("金额最多支持两位小数（剩余尝试次数: %d）\n", max_attempts - input_attempts - 1);
             input_attempts++;
             continue;
         }
 
-        break;
+        break; // 输入有效，退出循环
     }
 
     // 超过最大尝试次数
     if (input_attempts >= max_attempts) {
-        printf("\n错误：连续输入错误超过%d次，返回主菜单\n", max_attempts);
+        printf("\n错误：连续输入错误超过 %d 次，返回主菜单\n", max_attempts);
         return;
     }
 
@@ -338,4 +471,5 @@ void trans_money(int current_account_index) {
     time_t now = time(NULL);
     printf("%s", ctime(&now));
     printf("====================\n");
+    Sleep(3000);
 }

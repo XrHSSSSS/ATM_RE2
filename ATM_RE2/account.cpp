@@ -3,9 +3,12 @@
 #include <ctype.h>
 #include <math.h>
 #include <string.h>
+#include <stdlib.h>
+#include <windows.h>
 #include "file.h"
 #include "transacation.h"
-#include "account.h" // 添加此行
+#include "account.h" 
+#include "logos.h"
 
 #define DEPOSIT_TYPE  1
 #define WITHDRAWAL_TYPE 2  // 交易类型定义
@@ -18,31 +21,57 @@
 void account_info_menu(int current_account_index) {
     int choice;
     while (1) {
-        printf("\n===== 账户信息管理 =====\n");
-        printf("1. 修改密码\n");
-        printf("2. 查看账户信息\n");
-        printf("3. 查询余额\n");
-        printf("4. 查看交易记录\n");
-        printf("5. 返回主菜单\n");
+        display_bonjupt();
+        printf("\n\n\n\n");
+        printf("           ****************************************\n");
+        printf("           *       ===== 账户信息管理 =====       *\n");
+        printf("           *       1. 修改密码                    *\n");
+        printf("           *       2. 查看账户信息                *\n");
+        printf("           *       3. 查询余额                    *\n");
+        printf("           *       4. 查看交易记录                *\n");
+        printf("           *       5. 返回主菜单                  *\n");
+        printf("           ****************************************\n");
         printf("请选择操作: ");
         scanf("%d", &choice);
 
+        // 输入验证：检查用户输入是否合法
+        if (scanf("%d", &choice) != 1) {
+            // 如果scanf返回值不为1，说明输入不是有效的整数
+            while (getchar() != '\n');  // 清空缓冲区
+            system("cls");
+            printf("无效的输入，请输入一个整数。\n");
+            continue;  // 重新进入循环
+        }
+
+        // 检查输入是否在合法范围内
+        if (choice < 1 || choice > 5) {
+            system("cls");
+            printf("无效的选择，请重新输入。\n");
+            continue;  // 重新进入循环
+        }
+
+
         switch (choice) {
         case 1:
+            system("cls");
             change_password(current_account_index);
             break;
         case 2:
+            system("cls");
             show_account_info(current_account_index);
             break;
         case 3:
+            system("cls");
             show_balance(current_account_index);
             break;
         case 4:
+            system("cls");
             show_transaction_history(current_account_index);
             break;
         case 5:
             return; // 返回上级菜单
         default:
+            system("cls");
             printf("无效输入，请重新选择！\n");
         }
     }
@@ -62,6 +91,7 @@ void change_password(int current_account_index) {
     char input[7];
 
     // 输入旧密码
+    system("cls");
     printf("\n=== 修改密码 ===\n");
     printf("请输入旧密码（6位数字）: ");
     if (scanf("%6s", input) != 1) {
@@ -122,25 +152,31 @@ void change_password(int current_account_index) {
  
 void show_account_info(int current_account_index) {
     Account* current = &accounts[current_account_index];
-    printf("\n=== 账户信息 ===\n");
-    printf("账号: %s\n", current->ID);
-    printf("姓名: %s\n", current->name);
-    printf("密码错误次数: %d\n", current->failed);
-    printf("余额: ¥%.2lf\n", current->money);
-    printf("================\n");
+    printf("\n\n\n\n");
+    printf("           ****************************************\n");
+    printf("           *            === 账户信息 ===          *\n");
+    printf("           *            账号: %s             *\n", current->ID);
+    printf("           *            姓名: %s                *\n", current->name);
+    printf("           *            密码错误次数: %d           *\n", current->failed);
+    printf("           *            余额: ¥%.2lf          *\n", current->money);
+    printf("           *            ================          *\n");
+    printf("           ****************************************\n");
 }
 
 // 显示余额
  
 void show_balance(int current_account_index) {
     Account* current = &accounts[current_account_index];
+    system("cls");
     printf("\n当前余额: ¥%.2lf\n", current->money);
+    Sleep(2000);
 }
 
 //查询交易记录
 
 void show_transaction_history(int current_account_index) {
     Account* current = &accounts[current_account_index];
+    system("cls");
     printf("\n=== 交易记录 ===\n");
 
     // 加载交易记录
