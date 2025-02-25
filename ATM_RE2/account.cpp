@@ -32,25 +32,23 @@ void account_info_menu(int current_account_index) {
         printf("           *       5. 返回主菜单                  *\n");
         printf("           ****************************************\n");
         printf("请选择操作: ");
-        scanf("%d", &choice);
 
-        // 输入验证：检查用户输入是否合法
+        // 只使用一次 scanf 读取用户输入
         if (scanf("%d", &choice) != 1) {
-            // 如果scanf返回值不为1，说明输入不是有效的整数
             while (getchar() != '\n');  // 清空缓冲区
             system("cls");
             printf("无效的输入，请输入一个整数。\n");
-            continue;  // 重新进入循环
+            continue;  // 重新进入循环要求输入
         }
 
         // 检查输入是否在合法范围内
         if (choice < 1 || choice > 5) {
             system("cls");
             printf("无效的选择，请重新输入。\n");
-            continue;  // 重新进入循环
+            continue;  // 重新进入循环要求输入
         }
 
-
+        // 根据用户输入执行对应操作
         switch (choice) {
         case 1:
             system("cls");
@@ -76,6 +74,7 @@ void account_info_menu(int current_account_index) {
         }
     }
 }
+
 
 //修改密码
  
@@ -158,7 +157,7 @@ void show_account_info(int current_account_index) {
     printf("           *            账号: %s             *\n", current->ID);
     printf("           *            姓名: %s                *\n", current->name);
     printf("           *            密码错误次数: %d           *\n", current->failed);
-    printf("           *            余额: ¥%.2lf          *\n", current->money);
+    printf("           *            余额: RMB%.2lf         *\n", current->money);
     printf("           *            ================          *\n");
     printf("           ****************************************\n");
 }
@@ -169,6 +168,7 @@ void show_balance(int current_account_index) {
     Account* current = &accounts[current_account_index];
     system("cls");
     printf("\n当前余额: ¥%.2lf\n", current->money);
+    printf("\n2秒后返回上级菜单...\n");
     Sleep(2000);
 }
 
@@ -202,7 +202,7 @@ void show_transaction_history(int current_account_index) {
             case TRANSFER_TYPE: printf("转账至 %s", stmt.toAccount); break;
             default:            printf("未知");
             }
-            printf("\n金额: ¥%.2lf\n", stmt.money);
+            printf("\n金额: RMB%.2lf\n", stmt.money);
             count++;
         }
     }

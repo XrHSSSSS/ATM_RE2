@@ -5,8 +5,10 @@
 #include <string.h>
 #include <ctype.h>
 #include <direct.h>
+#include <Windows.h>
 #include "file.h"
 #include "logos.h"
+
 
 int login() {
     char input_id[20];

@@ -34,7 +34,7 @@ void get_cash(int current_account_index) {
     Account* current = &accounts[current_account_index];
 
     printf("\n=== 取款操作 ===\n");
-    printf("当前可用余额: ¥%.2lf\n", current->money);
+    printf("当前可用余额: RMB%.2lf\n", current->money);
 
     double amount = 0;
     int input_attempts = 0;
@@ -128,7 +128,7 @@ void get_cash(int current_account_index) {
 
     // 余额验证
     if (current->money < amount) {
-        printf("\n错误：账户余额不足（当前余额: ¥%.2lf）\n", current->money);
+        printf("\n错误：账户余额不足（当前余额: RMB%.2lf）\n", current->money);
         return;
     }
 
@@ -143,15 +143,15 @@ void get_cash(int current_account_index) {
 
     // 操作结果
     printf("\n取款成功！\n");
-    printf("实际取出金额: ¥%.2lf\n", amount);
-    printf("最新账户余额: ¥%.2lf\n", current->money);
+    printf("实际取出金额: RMB%.2lf\n", amount);
+    printf("最新账户余额: RMB%.2lf\n", current->money);
 
     // 打印交易凭条
     printf("\n=== 交易凭条 ===\n");
     printf("交易类型: 取款\n");
     printf("交易账号: %s\n", current->ID);
-    printf("交易金额: ¥%.2lf\n", amount);
-    printf("剩余余额: ¥%.2lf\n", current->money);
+    printf("交易金额: RMB%.2lf\n", amount);
+    printf("剩余余额: RMB%.2lf\n", current->money);
     printf("交易时间: ");
     time_t now = time(NULL);
     printf("%s", ctime(&now));
@@ -187,7 +187,7 @@ void input_cash(int current_account_index) {
 
     Account* current = &accounts[current_account_index];
     printf("\n=== 存款操作 ===\n");
-    printf("当前账户余额: ¥%.2lf\n", current->money);
+    printf("当前账户余额: RMB%.2lf\n", current->money);
 
     double amount = 0.0;
     int input_attempts = 0;
@@ -292,15 +292,15 @@ void input_cash(int current_account_index) {
 
     // 用户反馈
     printf("\n存款成功！\n");
-    printf("存入金额: ¥%.2lf\n", amount);
-    printf("最新余额: ¥%.2lf\n", current->money);
+    printf("存入金额: RMB%.2lf\n", amount);
+    printf("最新余额: RMB%.2lf\n", current->money);
 
     // 打印交易凭条
     printf("\n=== 交易凭条 ===\n");
     printf("账户: %s\n", current->ID);
     printf("类型: 存款\n");
-    printf("金额: ¥%.2lf\n", amount);
-    printf("余额: ¥%.2lf\n", current->money);
+    printf("金额: RMB%.2lf\n", amount);
+    printf("余额: RMB%.2lf\n", current->money);
     printf("时间: ");
     time_t now = time(NULL);
     printf("%s", ctime(&now));
@@ -327,7 +327,7 @@ void trans_money(int current_account_index) {
 
     Account* current = &accounts[current_account_index];
     printf("\n=== 转账操作 ===\n");
-    printf("当前账户余额: ¥%.2lf\n", current->money);
+    printf("当前账户余额: RMB%.2lf\n", current->money);
 
     // 输入转账目标账户ID
     char target_account_id[20];
@@ -440,7 +440,7 @@ void trans_money(int current_account_index) {
 
     // 余额验证
     if (current->money < amount) {
-        printf("\n错误：账户余额不足（当前余额: ¥%.2lf）\n", current->money);
+        printf("\n错误：账户余额不足（当前余额: RMB%.2lf）\n", current->money);
         return;
     }
 
@@ -457,16 +457,16 @@ void trans_money(int current_account_index) {
 
     // 操作结果
     printf("\n转账成功！\n");
-    printf("转账金额: ¥%.2lf\n", amount);
-    printf("转账后余额: ¥%.2lf\n", current->money);
+    printf("转账金额: RMB%.2lf\n", amount);
+    printf("转账后余额: RMB%.2lf\n", current->money);
 
     // 打印交易凭条
     printf("\n=== 交易凭条 ===\n");
     printf("交易类型: 转账\n");
     printf("交易账号: %s\n", current->ID);
     printf("目标账户: %s\n", target->ID);
-    printf("转账金额: ¥%.2lf\n", amount);
-    printf("剩余余额: ¥%.2lf\n", current->money);
+    printf("转账金额: RMB%.2lf\n", amount);
+    printf("剩余余额: RMB%.2lf\n", current->money);
     printf("交易时间: ");
     time_t now = time(NULL);
     printf("%s", ctime(&now));
