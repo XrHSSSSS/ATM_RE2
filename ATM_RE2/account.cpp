@@ -157,7 +157,7 @@ void show_account_info(int current_account_index) {
     printf("           *            账号: %s             *\n", current->ID);
     printf("           *            姓名: %s                *\n", current->name);
     printf("           *            密码错误次数: %d           *\n", current->failed);
-    printf("           *            余额: RMB%.2lf         *\n", current->money);
+    printf("           *            余额: RMB %.2lf        *\n", current->money);
     printf("           *            ================          *\n");
     printf("           ****************************************\n");
 }
@@ -202,7 +202,7 @@ void show_transaction_history(int current_account_index) {
             case TRANSFER_TYPE: printf("转账至 %s", stmt.toAccount); break;
             default:            printf("未知");
             }
-            printf("\n金额: RMB%.2lf\n", stmt.money);
+            printf("\n金额: RMB %.2lf\n", stmt.money);
             count++;
         }
     }

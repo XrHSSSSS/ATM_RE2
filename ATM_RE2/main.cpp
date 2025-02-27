@@ -1,6 +1,5 @@
 #include <stdio.h>
 #include "menu.h"
-#include "file.h"
 #include "login.h"
 // Ö÷º¯Êý
 

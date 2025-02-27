@@ -4,6 +4,7 @@
 #include <stdlib.h>
 #include <time.h>
 #include "file.h"
+#include "encrypt_decrypt.h"
 
 /* ================== 全局变量定义 ================== */
 Account accounts[MAX_ACCOUNTS];  // 账户数据存储数组
@@ -28,28 +29,31 @@ int read_account(const char* filename) {
     memset(accounts, 0, sizeof(accounts));  // 清空内存
 
     while (account_count < MAX_ACCOUNTS) {
-        // 使用安全输入函数读取数据
+        int encrypted_pwd[6];
+        // 读取加密后的密码
         int ret = fscanf_s(file, "%19s %19s %d %d %d %d %d %d %d %lf",
             accounts[account_count].ID, sizeof(accounts[account_count].ID),
             accounts[account_count].name, sizeof(accounts[account_count].name),
             &accounts[account_count].failed,
-            &accounts[account_count].password[0],
-            &accounts[account_count].password[1],
-            &accounts[account_count].password[2],
-            &accounts[account_count].password[3],
-            &accounts[account_count].password[4],
-            &accounts[account_count].password[5],
+            &encrypted_pwd[0], &encrypted_pwd[1], &encrypted_pwd[2],
+            &encrypted_pwd[3], &encrypted_pwd[4], &encrypted_pwd[5],
             &accounts[account_count].money);
 
-        // 验证读取字段数量
-        if (ret == EOF) break;  // 文件结束
-        if (ret != 10) {
-            fprintf(stderr, "[警告] 账户文件格式错误（第%d行）\n", account_count + 1);
-            fclose(file);
-            return 0;
+        // 处理密码解密
+        char encrypted_str[7];
+        snprintf(encrypted_str, sizeof(encrypted_str), "%d%d%d%d%d%d",
+            encrypted_pwd[0], encrypted_pwd[1], encrypted_pwd[2],
+            encrypted_pwd[3], encrypted_pwd[4], encrypted_pwd[5]);
+        decrypt(encrypted_str, ENCRYPT_OFFSET);
+
+        // 存入结构体
+        for (int j = 0; j < 6; j++) {
+            accounts[account_count].password[j] = encrypted_str[j] - '0';
         }
+
         account_count++;
     }
+    
 
     fclose(file);
     printf("已加载 %d 个账户\n", account_count);
@@ -69,17 +73,33 @@ int write_account(const char* filename) {
     }
 
     for (int i = 0; i < account_count; i++) {
-        // 使用统一格式写入数据
+        // 仅处理有效账户（ID非空且长度合理）
+        if (strlen(accounts[i].ID) < 5 || strlen(accounts[i].name) == 0) {
+            fprintf(stderr, "[警告] 跳过无效账户（索引 %d）\n", i);
+            continue; // 跳过无效数据
+        }
+
+        // 加密密码
+        char pwd_str[7];
+        snprintf(pwd_str, sizeof(pwd_str), "%d%d%d%d%d%d",
+            accounts[i].password[0], accounts[i].password[1],
+            accounts[i].password[2], accounts[i].password[3],
+            accounts[i].password[4], accounts[i].password[5]);
+        encrypt(pwd_str, ENCRYPT_OFFSET);
+
+        // 拆分为整数写入
+        int encrypted_pwd[6];
+        for (int j = 0; j < 6; j++) {
+            encrypted_pwd[j] = pwd_str[j] - '0';
+        }
+
+        // 写入格式化数据（严格字段校验）
         fprintf(file, "%s %s %d %d %d %d %d %d %d %.2lf\n",
             accounts[i].ID,
             accounts[i].name,
             accounts[i].failed,
-            accounts[i].password[0],
-            accounts[i].password[1],
-            accounts[i].password[2],
-            accounts[i].password[3],
-            accounts[i].password[4],
-            accounts[i].password[5],
+            encrypted_pwd[0], encrypted_pwd[1], encrypted_pwd[2],
+            encrypted_pwd[3], encrypted_pwd[4], encrypted_pwd[5],
             accounts[i].money);
     }
 
@@ -193,7 +213,7 @@ void generate_transaction(int type, const char* target_account, double amount) {
 /* ================== 辅助函数 ================== */
 
 //统一保存账户数据（供外部调用）
- 
+
 void write_accounts_to_file() {
     if (!write_account("accounts.txt")) {
         fprintf(stderr, "[严重] 账户数据保存失败，系统即将终止！\n");
