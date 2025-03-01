@@ -36,6 +36,9 @@
     <ClCompile Include="transacation.cpp">
       <Filter>源文件</Filter>
     </ClCompile>
+    <ClCompile Include="encrypt_decrypt.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="account.h">
@@ -54,6 +57,9 @@
       <Filter>头文件</Filter>
     </ClInclude>
     <ClInclude Include="transacation.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="encrypt_decrypt.h">
       <Filter>头文件</Filter>
     </ClInclude>
   </ItemGroup>

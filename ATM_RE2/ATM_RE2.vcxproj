@@ -128,6 +128,7 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="account.cpp" />
+    <ClCompile Include="encrypt_decrypt.cpp" />
     <ClCompile Include="file.cpp" />
     <ClCompile Include="login.cpp" />
     <ClCompile Include="logos.cpp" />
@@ -137,6 +138,7 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="account.h" />
+    <ClInclude Include="encrypt_decrypt.h" />
     <ClInclude Include="file.h" />
     <ClInclude Include="login.h" />
     <ClInclude Include="logos.h" />

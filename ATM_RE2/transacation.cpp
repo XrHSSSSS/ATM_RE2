@@ -452,8 +452,8 @@ void trans_money(int current_account_index) {
     write_accounts_to_file();
 
     // 生成转账交易记录（转账金额为负数表示支出）
-    generate_transaction(TRANSFER_TYPE, target_account_id, -amount);
-    generate_transaction(TRANSFER_TYPE, current->ID, amount);
+    generate_transaction(TRANSFER_TYPE, target_account_id, amount);
+
 
     // 操作结果
     printf("\n转账成功！\n");

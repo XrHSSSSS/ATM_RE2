@@ -13,7 +13,8 @@
 
 
 // 主菜单函数
-void show_main_menu() {
+void show_main_menu() 
+{
     
     display_bonjupt();
     printf("\n\n\n\n");
@@ -30,13 +31,16 @@ void show_main_menu() {
 
 // 一级菜单：主菜单
 
-void main_menu(int current_account_index) {
+void main_menu(int current_account_index) 
+{
     int choice;
-    while (1) {
+    while (1) 
+    {
         show_main_menu();  // 显示主菜单
 
         // 输入验证：检查用户输入是否合法
-        if (scanf("%d", &choice) != 1) {
+        if (scanf("%d", &choice) != 1) 
+        {
             // 如果scanf返回值不为1，说明输入不是有效的整数
             while (getchar() != '\n');  // 清空缓冲区
             system("cls");
@@ -45,13 +49,15 @@ void main_menu(int current_account_index) {
         }
 
         // 检查输入是否在合法范围内
-        if (choice < 1 || choice > 5) {
+        if (choice < 1 || choice > 5) 
+        {
             system("cls");
             printf("无效的选择，请重新输入。\n");
             continue;  // 重新进入循环
         }
 
-        switch (choice) {
+        switch (choice) 
+        {
         case 1:
             system("cls");
             account_info_menu(current_account_index); // 账户管理菜单

@@ -18,9 +18,11 @@ int transaction_counter = 0;     // 交易流水号生成器
  * filename 账户文件名
  * return 1=成功 0=失败
  */
-int read_account(const char* filename) {
+int read_account(const char* filename) 
+{
     FILE* file = fopen(filename, "r");
-    if (!file) {
+    if (!file) 
+    {
         fprintf(stderr, "[错误] 无法打开账户文件: %s\n", filename);
         return 0;
     }
@@ -28,7 +30,8 @@ int read_account(const char* filename) {
     account_count = 0;  // 重置计数器
     memset(accounts, 0, sizeof(accounts));  // 清空内存
 
-    while (account_count < MAX_ACCOUNTS) {
+    while (account_count < MAX_ACCOUNTS) 
+    {
         int encrypted_pwd[6];
         // 读取加密后的密码
         int ret = fscanf_s(file, "%19s %19s %d %d %d %d %d %d %d %lf",
@@ -47,7 +50,8 @@ int read_account(const char* filename) {
         decrypt(encrypted_str, ENCRYPT_OFFSET);
 
         // 存入结构体
-        for (int j = 0; j < 6; j++) {
+        for (int j = 0; j < 6; j++) 
+        {
             accounts[account_count].password[j] = encrypted_str[j] - '0';
         }
 
@@ -65,17 +69,21 @@ int read_account(const char* filename) {
  * filename 账户文件名
  * return 1=成功 0=失败
  */
-int write_account(const char* filename) {
+int write_account(const char* filename) 
+{
     FILE* file = fopen(filename, "w");
-    if (!file) {
+    if (!file) 
+    {
         fprintf(stderr, "[错误] 无法创建账户文件: %s\n", filename);
         return 0;
     }
 
-    for (int i = 0; i < account_count; i++) {
+    for (int i = 0; i < account_count; i++) 
+    {
         // 仅处理有效账户（ID非空且长度合理）
-        if (strlen(accounts[i].ID) < 5 || strlen(accounts[i].name) == 0) {
-            fprintf(stderr, "[警告] 跳过无效账户（索引 %d）\n", i);
+        if (strlen(accounts[i].ID) < 5 || strlen(accounts[i].name) == 0) 
+        {
+            //fprintf(stderr, "[警告] 跳过无效账户（索引 %d）\n", i);
             continue; // 跳过无效数据
         }
 
@@ -89,7 +97,8 @@ int write_account(const char* filename) {
 
         // 拆分为整数写入
         int encrypted_pwd[6];
-        for (int j = 0; j < 6; j++) {
+        for (int j = 0; j < 6; j++) 
+        {
             encrypted_pwd[j] = pwd_str[j] - '0';
         }
 
@@ -114,9 +123,11 @@ int write_account(const char* filename) {
  * filename 交易流水文件名
  * return 1=成功 0=失败
  */
-int read_transactions(const char* filename) {
+int read_transactions(const char* filename) 
+{
     FILE* file = fopen(filename, "r");
-    if (!file) {
+    if (!file) 
+    {
         printf("[注意] 交易文件不存在，将创建新文件\n");
         return 1;  // 允许文件不存在
     }
@@ -133,7 +144,8 @@ int read_transactions(const char* filename) {
         temp.toAccount, sizeof(temp.toAccount)) == 6)
     {
         // 解析交易流水号
-        if (sscanf(temp.ID, "T%04d", &transaction_counter) != 1) {
+        if (sscanf(temp.ID, "T%04d", &transaction_counter) != 1) 
+        {
             fprintf(stderr, "[警告] 无效交易流水号: %s\n", temp.ID);
         }
         transaction_counter++;  // 确保计数器大于文件中的最大值
@@ -150,9 +162,11 @@ int read_transactions(const char* filename) {
  * stmt 交易记录指针
  * return 1=成功 0=失败
  */
-int write_transaction(const char* filename, Statement* stmt) {
+int write_transaction(const char* filename, Statement* stmt) 
+{
     FILE* file = fopen(filename, "a");
-    if (!file) {
+    if (!file)
+    {
         fprintf(stderr, "[错误] 无法打开交易文件: %s\n", filename);
         return 0;
     }
@@ -181,7 +195,8 @@ int write_transaction(const char* filename, Statement* stmt) {
  * target_account 目标账户（转账时使用）
  * amount 交易金额
  */
-void generate_transaction(int type, const char* target_account, double amount) {
+void generate_transaction(int type, const char* target_account, double amount) 
+{
     Statement stmt;
 
     // 生成交易ID
@@ -196,16 +211,19 @@ void generate_transaction(int type, const char* target_account, double amount) {
     stmt.money = amount;
 
     // 处理目标账户
-    if (target_account && strlen(target_account) > 0) {
+    if (target_account && strlen(target_account) > 0) 
+    {
         strncpy(stmt.toAccount, target_account, sizeof(stmt.toAccount) - 1);
         stmt.toAccount[sizeof(stmt.toAccount) - 1] = '\0';
     }
-    else {
+    else
+    {
         strcpy(stmt.toAccount, "N/A");
     }
 
     // 写入文件
-    if (!write_transaction("transactions.txt", &stmt)) {
+    if (!write_transaction("transactions.txt", &stmt)) 
+    {
         fprintf(stderr, "[严重] 交易记录丢失！交易号：%s\n", stmt.ID);
     }
 }
@@ -214,8 +232,10 @@ void generate_transaction(int type, const char* target_account, double amount) {
 
 //统一保存账户数据（供外部调用）
 
-void write_accounts_to_file() {
-    if (!write_account("accounts.txt")) {
+void write_accounts_to_file() 
+{
+    if (!write_account("accounts.txt")) 
+    {
         fprintf(stderr, "[严重] 账户数据保存失败，系统即将终止！\n");
         exit(EXIT_FAILURE);
     }
@@ -226,9 +246,12 @@ void write_accounts_to_file() {
  * account_id 要查找的账户ID
  * return 账户索引（-1表示未找到）
  */
-int find_account_index(const char* account_id) {
-    for (int i = 0; i < account_count; i++) {
-        if (strcmp(account_id, accounts[i].ID) == 0) {
+int find_account_index(const char* account_id)
+{
+    for (int i = 0; i < account_count; i++) 
+    {
+        if (strcmp(account_id, accounts[i].ID) == 0) 
+        {
             return i;
         }
     }

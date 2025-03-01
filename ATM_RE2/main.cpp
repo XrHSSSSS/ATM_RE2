@@ -4,11 +4,13 @@
 // 主函数
 
 
-int main() {
+int main() 
+{
     // 用户登录
     int current_account = login();
 
-    if (current_account != -1) {
+    if (current_account != -1) 
+    {
         main_menu(current_account);  // 传递当前账户索引
     }
     return 0;

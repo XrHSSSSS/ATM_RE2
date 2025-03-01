@@ -18,9 +18,11 @@
 #define ACCOUNT_FILE "accounts.txt"
 #define TRANSACTION_FILE "transactions.txt"
 
-void account_info_menu(int current_account_index) {
+void account_info_menu(int current_account_index) 
+{
     int choice;
-    while (1) {
+    while (1) 
+    {
         display_bonjupt();
         printf("\n\n\n\n");
         printf("           ****************************************\n");
@@ -34,7 +36,8 @@ void account_info_menu(int current_account_index) {
         printf("请选择操作: ");
 
         // 只使用一次 scanf 读取用户输入
-        if (scanf("%d", &choice) != 1) {
+        if (scanf("%d", &choice) != 1) 
+        {
             while (getchar() != '\n');  // 清空缓冲区
             system("cls");
             printf("无效的输入，请输入一个整数。\n");
@@ -42,14 +45,16 @@ void account_info_menu(int current_account_index) {
         }
 
         // 检查输入是否在合法范围内
-        if (choice < 1 || choice > 5) {
+        if (choice < 1 || choice > 5) 
+        {
             system("cls");
             printf("无效的选择，请重新输入。\n");
             continue;  // 重新进入循环要求输入
         }
 
         // 根据用户输入执行对应操作
-        switch (choice) {
+        switch (choice) 
+        {
         case 1:
             system("cls");
             change_password(current_account_index);
@@ -78,9 +83,11 @@ void account_info_menu(int current_account_index) {
 
 //修改密码
  
-void change_password(int current_account_index) {
+void change_password(int current_account_index) 
+{
     // 重新加载账户数据
-    if (!read_account(ACCOUNT_FILE)) {
+    if (!read_account(ACCOUNT_FILE)) 
+    {
         printf("错误：账户数据加载失败！\n");
         return;
     }
@@ -93,12 +100,15 @@ void change_password(int current_account_index) {
     system("cls");
     printf("\n=== 修改密码 ===\n");
     printf("请输入旧密码（6位数字）: ");
-    if (scanf("%6s", input) != 1) {
+    if (scanf("%6s", input) != 1) 
+    {
         printf("输入错误！\n");
         return;
     }
-    for (int i = 0; i < 6; i++) {
-        if (!isdigit(input[i])) {
+    for (int i = 0; i < 6; i++) 
+    {
+        if (!isdigit(input[i])) 
+        {
             printf("密码必须为6位数字！\n");
             return;
         }
@@ -106,19 +116,23 @@ void change_password(int current_account_index) {
     }
 
     // 验证旧密码
-    if (memcmp(old_password, current->password, sizeof(current->password)) != 0) {
+    if (memcmp(old_password, current->password, sizeof(current->password)) != 0) 
+    {
         printf("旧密码错误！\n");
         return;
     }
 
     // 输入新密码
     printf("请输入新密码（6位数字）: ");
-    if (scanf("%6s", input) != 1) {
+    if (scanf("%6s", input) != 1) 
+    {
         printf("输入错误！\n");
         return;
     }
-    for (int i = 0; i < 6; i++) {
-        if (!isdigit(input[i])) {
+    for (int i = 0; i < 6; i++) 
+    {
+        if (!isdigit(input[i])) 
+        {
             printf("密码必须为6位数字！\n");
             return;
         }
@@ -127,16 +141,19 @@ void change_password(int current_account_index) {
 
     // 确认新密码
     printf("请再次输入新密码: ");
-    if (scanf("%6s", input) != 1) {
+    if (scanf("%6s", input) != 1) 
+    {
         printf("输入错误！\n");
         return;
     }
-    for (int i = 0; i < 6; i++) {
+    for (int i = 0; i < 6; i++) 
+    {
         confirm_password[i] = input[i] - '0';
     }
 
     // 验证一致性
-    if (memcmp(new_password, confirm_password, sizeof(new_password)) != 0) {
+    if (memcmp(new_password, confirm_password, sizeof(new_password)) != 0) 
+    {
         printf("两次输入的密码不一致！\n");
         return;
     }
@@ -149,7 +166,8 @@ void change_password(int current_account_index) {
 
  //显示账户信息
  
-void show_account_info(int current_account_index) {
+void show_account_info(int current_account_index) 
+{
     Account* current = &accounts[current_account_index];
     printf("\n\n\n\n");
     printf("           ****************************************\n");
@@ -164,24 +182,27 @@ void show_account_info(int current_account_index) {
 
 // 显示余额
  
-void show_balance(int current_account_index) {
+void show_balance(int current_account_index) 
+{
     Account* current = &accounts[current_account_index];
     system("cls");
-    printf("\n当前余额: ¥%.2lf\n", current->money);
+    printf("\n当前余额: RMB %.2lf\n", current->money);
     printf("\n2秒后返回上级菜单...\n");
     Sleep(2000);
 }
 
 //查询交易记录
 
-void show_transaction_history(int current_account_index) {
+void show_transaction_history(int current_account_index) 
+{
     Account* current = &accounts[current_account_index];
     system("cls");
     printf("\n=== 交易记录 ===\n");
 
     // 加载交易记录
     FILE* file = fopen(TRANSACTION_FILE, "r");
-    if (!file) {
+    if (!file) 
+    {
         printf("暂无交易记录！\n");
         return;
     }
@@ -192,11 +213,13 @@ void show_transaction_history(int current_account_index) {
         stmt.ID, stmt.accountID, stmt.time,
         &stmt.type, &stmt.money, stmt.toAccount) == 6)
     {
-        if (strcmp(stmt.accountID, current->ID) == 0) {
+        if (strcmp(stmt.accountID, current->ID) == 0 || strcmp(stmt.toAccount, current->ID) == 0) 
+        {
             // 格式化输出
             printf("\n时间: %s\n", stmt.time);
             printf("类型: ");
-            switch (stmt.type) {
+            switch (stmt.type) 
+            {
             case DEPOSIT_TYPE:  printf("存款"); break;
             case WITHDRAWAL_TYPE: printf("取款"); break;
             case TRANSFER_TYPE: printf("转账至 %s", stmt.toAccount); break;
@@ -207,7 +230,8 @@ void show_transaction_history(int current_account_index) {
         }
     }
 
-    if (count == 0) {
+    if (count == 0) 
+    {
         printf("暂无相关交易记录！\n");
     }
     fclose(file);
